@@ -13,6 +13,8 @@ package com.twitter.mybot.api.simonbot
 
 object SimonBot extends SimonBotPlus {
 
+  var score = 0
+
   /////////////////////////////////////
   /////
   /////
@@ -58,6 +60,28 @@ object SimonBot extends SimonBotPlus {
   /////////////////////////////////////
   /////
   /////
+  ///// Show a message based on the user's score
+  /////
+  /////
+  /////////////////////////////////////
+
+  def printscore = {
+    if (score == 0 ) {
+      "you're streak is over 🌧"
+    }
+
+    else if (score == 1) {
+      "you're starting to get on fire🔥"
+    }
+
+    else {
+      "🔥" * score
+    }
+  }
+
+  /////////////////////////////////////
+  /////
+  /////
   ///// Pool of Trivia Questions
   /////
   /////
@@ -69,9 +93,10 @@ object SimonBot extends SimonBotPlus {
       "How many championships has Michael Jordan won?" -> "6",
       "How many 3's did Curry make ?"     ->"1847",
       "what's the percentage of asians in the NBA " -> "0.2",
-      "how many point's did Simon make in basketball ?" -> "74"
+      "how many point's did Simon make in basketball ?" -> "79"
     )
   }
+
   /////////////////////////////////////
   /////
   /////
@@ -81,12 +106,14 @@ object SimonBot extends SimonBotPlus {
   /////////////////////////////////////
 
   def replyToCorrectTriviaAnswer(answer: String) = {
-    sendMessageWithText("Correct! 🤓")
+    score = score + 1
+    sendMessageWithText("Correct! 🤓 " + printscore)
   }
 
   def replyToWrongTriviaAnswer(correctAnswer: String, wrongAnwer: String) = {
-   val wrongAnswerMessage = chooseOneAtRandom(wrongAnswerMessages)
-    sendMessageWithText(wrongAnswerMessage  + correctAnswer)
+    score = 0
+    val wrongAnswerMessage = chooseOneAtRandom(wrongAnswerMessages)
+    sendMessageWithText(wrongAnswerMessage  + correctAnswer + " " + printscore)
   }
 
   /////////////////////////////////////
