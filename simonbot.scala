@@ -11,16 +11,12 @@ package com.twitter.mybot.api.simonbot
 /////
 /////////////////////////////////////
 
-object Score {
-  var score = 0
-}
-
 trait SimonBot extends SimonBotPlus {
 
   /////////////////////////////////////
   /////
   /////
-  ///// Menu
+  ///// Menu Buttons
   /////
   /////
   /////////////////////////////////////
@@ -48,7 +44,7 @@ trait SimonBot extends SimonBotPlus {
   }
    
   def seeMyCode() = {
-    sendMessageWithText("Click this link to see code https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
+    sendMessageWithText("Click this link to see my code https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
     sendMenu
   }
 
@@ -101,16 +97,16 @@ trait SimonBot extends SimonBotPlus {
   /////////////////////////////////////
 
   def printscore() = {
-    if (Score.score == 0 ) {
+    if (score == 0 ) {
       "you're streak is over 🌧"
     }
 
-    else if (Score.score == 1) {
+    else if (score == 1) {
       "you're starting to get on fire🔥"
     }
 
     else {
-      "🔥" * Score.score
+      "🔥" * score
     }
   }
 
@@ -151,14 +147,14 @@ trait SimonBot extends SimonBotPlus {
   /////////////////////////////////////
 
   def replyToCorrectAnswer() = {
-    Score.score = Score.score + 1
+    score = score + 1
     sendMessageWithText("Correct! 🤓")
     sendMessageWithText(printscore)
     sendMenu
   }
 
   def replyToWrongAnswer(correctAnswer: String) = {
-    Score.score = 0
+    score = 0
     val wrongAnswerMessage = chooseOneAtRandom(wrongAnswerMessages)
     sendMessageWithText(wrongAnswerMessage + correctAnswer)
     sendMessageWithText(printscore)
@@ -179,20 +175,4 @@ trait SimonBot extends SimonBotPlus {
       "Wrong! 😭 The correct answer is: "
     )
   }
-}
-
-/////////////////////////////////////
-/////
-/////
-///// Other available functions
-/////
-/////
-/////////////////////////////////////
-
-trait SimonBotPlus {
-  def sendMessageWithText(text: String): Unit
-  def sendMessageWithQuestion(triviaQuestion: String): Unit
-  def sendMenu(): Unit
-  def chooseOneAtRandom(map: Map[String, String]): String
-  def chooseOneAtRandom[V](seq: Seq[V]): V
 }
