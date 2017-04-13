@@ -11,9 +11,46 @@ package com.twitter.mybot.api.simonbot
 /////
 /////////////////////////////////////
 
-object SimonBot extends SimonBotPlus {
-
+object Score {
   var score = 0
+}
+
+trait SimonBot extends SimonBotPlus {
+
+  /////////////////////////////////////
+  /////
+  /////
+  ///// Menu
+  /////
+  /////
+  /////////////////////////////////////
+ 
+  def menuMessageText() = {
+    "What do you want to do?"
+  }
+
+  val menu = {
+    Map(
+      "Play trivia ❓" -> { () => playSportTrivia() },
+      "Emojigame" -> { () => playwithEmoji() },
+      "💻 See my code" -> { () => seeMyCode() }
+    )
+  }
+
+  def playSportTrivia() = {
+    val triviaQuestion = chooseOneAtRandom(triviaQuestions)
+    sendMessageWithQuestion(triviaQuestion)
+  }
+
+  def playwithEmoji() = {
+    val emojiGameQuestion = chooseOneAtRandom(emojigame)
+    sendMessageWithQuestion(emojiGameQuestion)
+  }
+   
+  def seeMyCode() = {
+    sendMessageWithText("Click this link to see code https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
+    sendMenu
+  }
 
   /////////////////////////////////////
   /////
@@ -26,35 +63,33 @@ object SimonBot extends SimonBotPlus {
   /////
   /////////////////////////////////////
 
-  def replyToMessage(message: String) = {
-    if (message == "Hi") {
+  def replyToMessage(userMessageText: String) = {
+
+    if (userMessageText == "Hi") {
       sendMessageWithText("Hi Simon!")
     }
 
-    else if (message == "Bye") {
+    else if (userMessageText == "Bye") {
       sendMessageWithText("Okay bye!")
     }
 
-    else if (message == "What's Stephan Curry's number?") {
+    else if (userMessageText == "What's Stephan Curry's number?") {
       sendMessageWithText("30")
     }
 
-    else if (message == "What's my favorite sport?") {
+    else if (userMessageText == "What's my favorite sport?") {
       sendMessageWithText("basketball")
     }
 
-    else if (message == "#trivia") {
-      val triviaQuestion = chooseOneAtRandom(triviaQuestions)
-      sendMessageWithTriviaQuestion(triviaQuestion)
-    }
-
-    else if (message == "#code") {
-      sendMessageWithText("https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
+    else if (userMessageText == "#menu") {
+      // Do nothing
     }
 
     else {
       sendMessageWithText("https://s-media-cache-ak0.pinimg.com/236x/49/2e/67/492e677ba588b95666f335dff2678048.jpg")
     }
+
+    sendMenu
   }
 
   /////////////////////////////////////
@@ -65,55 +100,69 @@ object SimonBot extends SimonBotPlus {
   /////
   /////////////////////////////////////
 
-  def printscore = {
-    if (score == 0 ) {
+  def printscore() = {
+    if (Score.score == 0 ) {
       "you're streak is over 🌧"
     }
 
-    else if (score == 1) {
+    else if (Score.score == 1) {
       "you're starting to get on fire🔥"
     }
 
     else {
-      "🔥" * score
+      "🔥" * Score.score
     }
   }
 
   /////////////////////////////////////
   /////
   /////
-  ///// Pool of Trivia Questions
+  ///// Pools of Questions
   /////
   /////
   /////////////////////////////////////
 
-  def triviaQuestions = {
+  val triviaQuestions = {
     Map(
       "What year did Kobe Bryant retire?" -> "2016",
       "How many championships has Michael Jordan won?" -> "6",
-      "How many 3's did Curry make ?"     ->"1847",
+      "How many 3's did Curry make ?" -> "1847",
       "what's the percentage of asians in the NBA " -> "0.2",
       "how many point's did Simon make in basketball ?" -> "79"
+    )
+  }
+
+  val emojigame = {
+    Map(
+      "🌞👓" -> "Sunglasses",
+      "🍔👑" -> "Burgerking",
+      "☕️💔" -> "Coffeebreack",
+      "🌟🐟" -> "Starfish",
+      "🍎📺" -> "Appletv"
     )
   }
 
   /////////////////////////////////////
   /////
   /////
-  ///// Trivia Responses
+  ///// Answer Responses
   /////
   /////
   /////////////////////////////////////
 
-  def replyToCorrectTriviaAnswer(answer: String) = {
-    score = score + 1
-    sendMessageWithText("Correct! 🤓 " + printscore)
+  def replyToCorrectAnswer() = {
+    Score.score = Score.score + 1
+    sendMessageWithText("Correct! 🤓")
+    sendMessageWithText(printscore)
+    sendMenu
   }
 
-  def replyToWrongTriviaAnswer(correctAnswer: String, wrongAnwer: String) = {
-    score = 0
+  def replyToWrongAnswer(correctAnswer: String) = {
+    Score.score = 0
     val wrongAnswerMessage = chooseOneAtRandom(wrongAnswerMessages)
-    sendMessageWithText(wrongAnswerMessage  + correctAnswer + " " + printscore)
+    sendMessageWithText(wrongAnswerMessage + correctAnswer)
+    sendMessageWithText(printscore)
+    sendMenu
   }
 
   /////////////////////////////////////
@@ -124,10 +173,26 @@ object SimonBot extends SimonBotPlus {
   /////
   /////////////////////////////////////
 
-  def wrongAnswerMessages = {
+  def wrongAnswerMessages() = {
     Seq(
       "corect 🤓 Just kidding! https://www.youtube.com/watch?v=dQw4w9WgXcQ You should have said: ",
       "Wrong! 😭 The correct answer is: "
     )
   }
+}
+
+/////////////////////////////////////
+/////
+/////
+///// Other available functions
+/////
+/////
+/////////////////////////////////////
+
+trait SimonBotPlus {
+  def sendMessageWithText(text: String): Unit
+  def sendMessageWithQuestion(triviaQuestion: String): Unit
+  def sendMenu(): Unit
+  def chooseOneAtRandom(map: Map[String, String]): String
+  def chooseOneAtRandom[V](seq: Seq[V]): V
 }
