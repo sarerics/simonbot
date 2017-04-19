@@ -29,22 +29,27 @@ trait SimonBot extends SimonBotPlus {
     Map(
       "Play trivia ❓" -> { () => playSportTrivia() },
       "Emojigame" -> { () => playwithEmoji() },
-      "💻 See my code" -> { () => seeMyCode() }
+      "💻 See my code" -> { () => seeMyCode() },
+      "Which Pokemon are you?" -> { () => startPersonalityQuiz() }
     )
   }
 
   def playSportTrivia() = {
     val triviaQuestion = chooseOneAtRandom(triviaQuestions)
-    sendMessageWithQuestion(triviaQuestion)
+    sendQuestion(triviaQuestion)
   }
 
   def playwithEmoji() = {
     val emojiGameQuestion = chooseOneAtRandom(emojigame)
-    sendMessageWithQuestion(emojiGameQuestion)
+    sendQuestion(emojiGameQuestion)
+  }
+
+  def startPersonalityQuiz() = {
+    sendPersonalityQuestion(PersonalityQuestions.head)
   }
    
   def seeMyCode() = {
-    sendMessageWithText("Click this link to see my code https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
+    sendText("Click this link to see my code https://github.com/sarerics/simonbot/blob/master/simonbot.scala")
     sendMenu
   }
 
@@ -62,29 +67,36 @@ trait SimonBot extends SimonBotPlus {
   def replyToMessage(userMessageText: String) = {
 
     if (userMessageText == "Hi") {
-      sendMessageWithText("Hi Simon!")
+      sendText("Hi Simon!")
+      sendMenu
     }
 
     else if (userMessageText == "Bye") {
-      sendMessageWithText("Okay bye!")
+      sendText("Okay bye!")
+      sendMenu
     }
 
     else if (userMessageText == "What's Stephan Curry's number?") {
-      sendMessageWithText("30")
+      sendText("30")
+      sendMenu
     }
 
     else if (userMessageText == "What's my favorite sport?") {
-      sendMessageWithText("basketball")
+      sendText("basketball")
+      sendMenu
     }
 
     else if (userMessageText == "#menu") {
-      // Do nothing
+      sendMenu
     }
 
     else {
-      sendMessageWithText("https://s-media-cache-ak0.pinimg.com/236x/49/2e/67/492e677ba588b95666f335dff2678048.jpg")
+      sendWaitWhat
     }
+  }
 
+  def sendWaitWhat() = {
+    sendImage("852331127570259968")
     sendMenu
   }
 
@@ -148,16 +160,16 @@ trait SimonBot extends SimonBotPlus {
 
   def replyToCorrectAnswer() = {
     score = score + 1
-    sendMessageWithText("Correct! 🤓")
-    sendMessageWithText(printscore)
+    sendText("Correct! 🤓")
+    sendText(printscore)
     sendMenu
   }
 
   def replyToWrongAnswer(correctAnswer: String) = {
     score = 0
     val wrongAnswerMessage = chooseOneAtRandom(wrongAnswerMessages)
-    sendMessageWithText(wrongAnswerMessage + correctAnswer)
-    sendMessageWithText(printscore)
+    sendText(wrongAnswerMessage + correctAnswer)
+    sendText(printscore)
     sendMenu
   }
 
@@ -174,5 +186,103 @@ trait SimonBot extends SimonBotPlus {
       "corect 🤓 Just kidding! https://www.youtube.com/watch?v=dQw4w9WgXcQ You should have said: ",
       "Wrong! 😭 The correct answer is: "
     )
+  }
+
+  /////////////////////////////////////
+  /////
+  /////
+  ///// Personality Quiz
+  /////
+  /////
+  /////////////////////////////////////
+
+  // PERSONALITIES
+
+  val Pikachu = Personality(
+    name = "Pikachu",
+    imageId = "854497357454483456",
+    bio = "You're very social. You are friends with everyone and a natural leader."
+  )
+
+  val Squirtle = Personality(
+    name = "Squirtle",
+    imageId = "854591972681449472",
+    bio = "You are sensitive and thoughtful. You like to spend time by yourself or with a small group."
+  )
+
+  val Turtwig= Personality(
+    name = "Turtwig",
+    imageId = "854827449137246209",
+    bio = "You like to hike or spend time outdoors."
+  )
+
+  val Chimchar = Personality(
+    name = "Chimchar",
+    imageId = "854829189844705280",
+    bio = "You like to sit by the fire place alone. Very adventurest."
+  )
+
+  val Personalities = Seq(
+    Pikachu,
+    Squirtle,
+    Turtwig,
+    Chimchar
+  )
+
+  // QUESTIONS
+
+ val Happyplace = PersonalityQuestion(
+    question = "What's your happy place?",
+    buttons = Map(
+      "somewhere peaceful" -> Pikachu,
+      "the beach" -> Squirtle,
+      "the forest"->Turtwig,
+      "alone by the fireplace "->Chimchar
+    )
+  )
+
+   val Whatdoliketodoonyourfreetime = PersonalityQuestion(
+    question = "what do like to do on your free time",
+    buttons = Map(
+      "handing out with friends" -> Pikachu,
+      "chilling" -> Squirtle,
+      "hikeing" -> Turtwig,
+      "eating" -> Chimchar
+    )
+  )
+
+  val FavoriteFood = PersonalityQuestion(
+    question = "What's your favorite food?",
+    buttons = Map(
+      "Cheese 🧀" -> Pikachu,
+      "Water 💧" -> Squirtle,
+      "vegetables 🥗" -> Turtwig,
+      "bananas 🍌" -> Chimchar
+    )
+  )
+
+  val FavoriteEmoji = PersonalityQuestion(
+    question = "What's your favorite emoji?",
+    buttons = Map(
+      "🤗⚡️" -> Pikachu,
+      "🐢💧" -> Squirtle,
+      "🌞" -> Turtwig,
+      "🐒🔥" -> Chimchar
+    )
+  )
+
+  val PersonalityQuestions = Seq(
+    Happyplace,
+    Whatdoliketodoonyourfreetime,
+    FavoriteFood,
+    FavoriteEmoji
+  )
+
+  // PRINT
+
+  def printPersonalityQuizResult(personality: Personality) = {
+    sendImage(personality.imageId)
+    sendText("You are " + personality.name + "!")
+    sendText(personality.bio)
   }
 }
