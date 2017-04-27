@@ -20,17 +20,17 @@ trait SimonBot extends SimonBotPlus {
   /////
   /////
   /////////////////////////////////////
- 
+
   def menuMessageText() = {
     "What do you want to do?"
   }
 
   val menu = {
     Map(
-      "Play trivia ❓" -> { () => playSportTrivia() },
-      "Emojigame" -> { () => playwithEmoji() },
-      "💻 See my code" -> { () => seeMyCode() },
-      "Which Pokemon are you?" -> { () => startPersonalityQuiz() }
+      "🏀 Basketball trivia 🏀" -> { () => playSportTrivia() },
+      "😎 Emojigame 😎" -> { () => playwithEmoji() },
+      "❓ Which Pokemon are you ❓" -> { () => startPersonalityQuiz() },
+      "💻 See my code 💻" -> { () => seeMyCode() }
     )
   }
 
@@ -67,22 +67,12 @@ trait SimonBot extends SimonBotPlus {
   def replyToMessage(userMessageText: String) = {
 
     if (userMessageText == "Hi") {
-      sendText("Hi Simon!")
+      sendText("Hi, I'm Simon Bot!")
       sendMenu
     }
 
     else if (userMessageText == "Bye") {
       sendText("Okay bye!")
-      sendMenu
-    }
-
-    else if (userMessageText == "What's Stephan Curry's number?") {
-      sendText("30")
-      sendMenu
-    }
-
-    else if (userMessageText == "What's my favorite sport?") {
-      sendText("basketball")
       sendMenu
     }
 
@@ -110,7 +100,7 @@ trait SimonBot extends SimonBotPlus {
 
   def printscore() = {
     if (score == 0 ) {
-      "you're streak is over 🌧"
+      "your streak is over 🌧"
     }
 
     else if (score == 1) {
@@ -136,17 +126,19 @@ trait SimonBot extends SimonBotPlus {
       "How many championships has Michael Jordan won?" -> "6",
       "How many 3's did Curry make ?" -> "1847",
       "what's the percentage of asians in the NBA " -> "0.2",
-      "how many point's did Simon make in basketball ?" -> "79"
+      "how many points did Simon make in basketball ?" -> "84",
+      "What's Simon's favorite sport?" -> "basketball",
+      "What's Stephan Curry's number?" -> "30"
     )
   }
 
   val emojigame = {
     Map(
       "🌞👓" -> "Sunglasses",
-      "🍔👑" -> "Burgerking",
-      "☕️💔" -> "Coffeebreack",
+      "🍔👑" -> "Burger King",
+      "☕️💔" -> "Coffee Break",
       "🌟🐟" -> "Starfish",
-      "🍎📺" -> "Appletv"
+      "🍎📺" -> "Apple TV"
     )
   }
 
@@ -266,7 +258,7 @@ trait SimonBot extends SimonBotPlus {
     buttons = Map(
       "🤗⚡️" -> Pikachu,
       "🐢💧" -> Squirtle,
-      "🌞" -> Turtwig,
+      "🌞🌱" -> Turtwig,
       "🐒🔥" -> Chimchar
     )
   )
